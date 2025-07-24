@@ -150,7 +150,7 @@ source "https://rubygems.org"
 gem "jekyll", "~> 4.3.2"
 gem "just-the-docs", "~> 0.10.1"
 gem "webrick", "~> 1.8"
-gem "jekyll-foam-links", github: "time4Wiley/jekyll-foam-links"
+gem "jekyll-foam-links", github: "time4Wiley/jekyll-foam-links", ref: "2a2d52a3b273449d6b7b4a47dcb655ea2a86eabc"
 
 # Ruby 3.4 compatibility - these were previously default gems
 gem "csv", "~> 3.0"
@@ -365,8 +365,9 @@ if [ -d .git ]; then
     git add -A
     git commit -m "feat: add Jekyll documentation site with Just the Docs
 
-- Added Jekyll with Just the Docs theme v0.10.1
-- Included jekyll-foam-links plugin for wikilink support
+- Added Jekyll with Just the Docs theme v0.10.1  
+- Included jekyll-foam-links plugin (v0.1.0) for wikilink support
+- Pinned jekyll-foam-links to commit 2a2d52a for stability
 - Configured for local development and LAN access
 - Enabled Mermaid diagram support
 - Set up automatic search functionality
