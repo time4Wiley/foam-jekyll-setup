@@ -13,7 +13,21 @@ A shell script to quickly set up Jekyll with Just the Docs theme for Foam knowle
 
 ## Installation
 
-### Option 1: Using the Shell Function (Recommended)
+### Option 1: Homebrew (Recommended for macOS)
+
+```bash
+brew tap time4wiley/foam
+brew install foam-jekyll-setup
+```
+
+After installation, you can immediately use:
+```bash
+foam-jekyll [directory]
+# or
+fj [directory]
+```
+
+### Option 2: Shell Function
 
 1. Clone this repository:
 ```bash
@@ -35,7 +49,7 @@ source /path/to/foam-jekyll-setup/foam-jekyll.sh
 source ~/.zshrc  # or ~/.bashrc
 ```
 
-### Option 2: Direct Script Usage
+### Option 3: Direct Script Usage
 
 ```bash
 # Download the script
