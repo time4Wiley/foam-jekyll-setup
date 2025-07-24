@@ -12,11 +12,21 @@ function foam-jekyll() {
         return 1
     fi
     
-    # Check if target directory is provided
+    # Handle different argument patterns
     if [[ $# -eq 0 ]]; then
         # If no argument, use current directory
         echo "Setting up Jekyll for current directory: $(pwd)"
         /bin/bash "$script_path" "$(pwd)"
+    elif [[ "$1" == "--uninstall" ]]; then
+        # Handle uninstall with optional directory
+        if [[ $# -eq 1 ]]; then
+            # Uninstall from current directory
+            echo "Uninstalling Jekyll from current directory: $(pwd)"
+            /bin/bash "$script_path" --uninstall "$(pwd)"
+        else
+            # Uninstall from specified directory
+            /bin/bash "$script_path" --uninstall "$2"
+        fi
     else
         # Use provided directory
         /bin/bash "$script_path" "$1"

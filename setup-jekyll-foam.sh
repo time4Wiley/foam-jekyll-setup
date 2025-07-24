@@ -3,6 +3,7 @@
 # Setup Jekyll with Just the Docs for Foam repositories
 # Based on learnings from foam-general Jekyll setup
 # Usage: ./setup-jekyll-foam.sh [target-directory]
+#        ./setup-jekyll-foam.sh --uninstall [target-directory]
 
 set -e
 
@@ -13,19 +14,103 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
+# Function to uninstall Jekyll setup
+uninstall_jekyll() {
+    local target_dir="$1"
+    
+    echo -e "${YELLOW}Uninstalling Jekyll setup from: $target_dir${NC}"
+    cd "$target_dir"
+    
+    # Files and directories to remove
+    local items_to_remove=(
+        "Gemfile"
+        "Gemfile.lock"
+        "_config.yml"
+        "run-jekyll.sh"
+        "_includes/footer_custom.html"
+        "public"
+        "_site"
+        ".jekyll-cache"
+        ".sass-cache"
+        ".bundle"
+        "vendor"
+    )
+    
+    echo -e "${BLUE}The following items will be removed:${NC}"
+    for item in "${items_to_remove[@]}"; do
+        if [ -e "$item" ]; then
+            echo "  - $item"
+        fi
+    done
+    
+    # Also check for empty _includes directory
+    if [ -d "_includes" ] && [ -z "$(ls -A _includes 2>/dev/null)" ]; then
+        echo "  - _includes (empty directory)"
+    fi
+    
+    read -p "Continue with uninstall? (y/n) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo -e "${BLUE}Uninstall cancelled${NC}"
+        exit 0
+    fi
+    
+    # Remove items
+    for item in "${items_to_remove[@]}"; do
+        if [ -e "$item" ]; then
+            rm -rf "$item"
+            echo -e "${GREEN}Removed: $item${NC}"
+        fi
+    done
+    
+    # Remove _includes if empty
+    if [ -d "_includes" ] && [ -z "$(ls -A _includes 2>/dev/null)" ]; then
+        rmdir "_includes"
+        echo -e "${GREEN}Removed: _includes (empty directory)${NC}"
+    fi
+    
+    # Clean bundle cache
+    echo -e "${GREEN}Cleaning bundle cache...${NC}"
+    rm -rf ~/.bundle/cache/compact_index/*github.com*foam*
+    
+    echo -e "${GREEN}✅ Jekyll setup uninstalled successfully!${NC}"
+    echo -e "${YELLOW}You can now run the setup script again for a fresh installation.${NC}"
+    exit 0
+}
+
+# Parse arguments
+UNINSTALL=false
+TARGET_DIR=""
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --uninstall)
+            UNINSTALL=true
+            shift
+            ;;
+        *)
+            TARGET_DIR="$1"
+            shift
+            ;;
+    esac
+done
+
 # Check if target directory is provided
-if [ $# -eq 0 ]; then
+if [ -z "$TARGET_DIR" ]; then
     echo -e "${RED}Error: Please provide target directory${NC}"
-    echo "Usage: $0 /path/to/foam-repo"
+    echo "Usage: $0 [--uninstall] /path/to/foam-repo"
     exit 1
 fi
-
-TARGET_DIR="$1"
 
 # Verify target directory exists
 if [ ! -d "$TARGET_DIR" ]; then
     echo -e "${RED}Error: Directory $TARGET_DIR does not exist${NC}"
     exit 1
+fi
+
+# Handle uninstall if requested
+if [ "$UNINSTALL" = true ]; then
+    uninstall_jekyll "$TARGET_DIR"
 fi
 
 echo -e "${BLUE}Setting up Jekyll with Just the Docs for: $TARGET_DIR${NC}"

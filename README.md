@@ -58,6 +58,9 @@ chmod +x setup-jekyll-foam.sh
 
 # Run in your Foam repository
 ./setup-jekyll-foam.sh /path/to/your/foam-repo
+
+# Or uninstall existing setup
+./setup-jekyll-foam.sh --uninstall /path/to/your/foam-repo
 ```
 
 ## Usage
@@ -77,6 +80,24 @@ The script will:
 4. Create a `run-jekyll.sh` helper script
 5. Install all dependencies
 6. Optionally start the Jekyll server
+
+### Uninstalling Jekyll Setup
+
+To completely remove the Jekyll setup (useful for reinstalling or updating plugins):
+
+```bash
+foam-jekyll --uninstall
+# or
+fj --uninstall
+# or specify a directory
+foam-jekyll --uninstall /path/to/your/foam-repo
+```
+
+This will:
+- Remove all Jekyll-related files (Gemfile, _config.yml, etc.)
+- Clean up build directories (public/, _site/, .jekyll-cache/)
+- Clear the bundle cache for foam-related gems
+- Allow you to run a fresh installation afterward
 
 ## What It Sets Up
 
