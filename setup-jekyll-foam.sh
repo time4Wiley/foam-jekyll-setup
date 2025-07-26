@@ -78,14 +78,105 @@ uninstall_jekyll() {
     exit 0
 }
 
+# Function to update existing _config.yml with image includes
+update_config_images() {
+    local target_dir="$1"
+    local config_file="$target_dir/_config.yml"
+    
+    if [ ! -f "$config_file" ]; then
+        echo -e "${RED}Error: _config.yml not found in $target_dir${NC}"
+        return 1
+    fi
+    
+    echo -e "${YELLOW}Updating _config.yml to include all image files...${NC}"
+    
+    # Check if include section already exists
+    if grep -q "^include:" "$config_file"; then
+        echo -e "${BLUE}Found existing include section in _config.yml${NC}"
+        
+        # Check if image includes already exist
+        if grep -q "_\*\.jpeg" "$config_file" || grep -q "_\*\.jpg" "$config_file"; then
+            echo -e "${GREEN}Image includes already configured!${NC}"
+            return 0
+        fi
+        
+        # Add image includes to existing include section
+        # Find the line number of include:
+        local include_line=$(grep -n "^include:" "$config_file" | cut -d: -f1)
+        
+        # Insert image includes after include: line
+        sed -i.bak "${include_line}a\\
+  - \"_*.jpeg\"\\
+  - \"_*.jpg\"\\
+  - \"_*.png\"\\
+  - \"_*.gif\"\\
+  - \"_*.svg\"\\
+  - \"_*.webp\"\\
+  - \"_*.bmp\"\\
+  - \"_*.ico\"\\
+  - \"_*.tiff\"\\
+  - \"_*.tif\"" "$config_file"
+        
+    else
+        # Add include section before exclude section if it exists
+        if grep -q "^exclude:" "$config_file"; then
+            local exclude_line=$(grep -n "^exclude:" "$config_file" | head -1 | cut -d: -f1)
+            sed -i.bak "${exclude_line}i\\
+# Include all image files (including those starting with underscore)\\
+include:\\
+  - \"_*.jpeg\"\\
+  - \"_*.jpg\"\\
+  - \"_*.png\"\\
+  - \"_*.gif\"\\
+  - \"_*.svg\"\\
+  - \"_*.webp\"\\
+  - \"_*.bmp\"\\
+  - \"_*.ico\"\\
+  - \"_*.tiff\"\\
+  - \"_*.tif\"\\
+\\
+" "$config_file"
+        else
+            # Append to end of file
+            cat >> "$config_file" << 'EOF'
+
+# Include all image files (including those starting with underscore)
+include:
+  - "_*.jpeg"
+  - "_*.jpg"
+  - "_*.png"
+  - "_*.gif"
+  - "_*.svg"
+  - "_*.webp"
+  - "_*.bmp"
+  - "_*.ico"
+  - "_*.tiff"
+  - "_*.tif"
+EOF
+        fi
+    fi
+    
+    # Remove backup file
+    rm -f "${config_file}.bak"
+    
+    echo -e "${GREEN}✅ Updated _config.yml with image includes!${NC}"
+    echo -e "${YELLOW}Please restart Jekyll server for changes to take effect.${NC}"
+    return 0
+}
+
 # Parse arguments
 UNINSTALL=false
+UPDATE_IMAGES=false
 TARGET_DIR=""
 
 while [[ $# -gt 0 ]]; do
     case $1 in
         --uninstall)
             UNINSTALL=true
+            shift
+            ;;
+        --update-images)
+            UPDATE_IMAGES=true
             shift
             ;;
         *)
@@ -98,7 +189,10 @@ done
 # Check if target directory is provided
 if [ -z "$TARGET_DIR" ]; then
     echo -e "${RED}Error: Please provide target directory${NC}"
-    echo "Usage: $0 [--uninstall] /path/to/foam-repo"
+    echo "Usage: $0 [options] /path/to/foam-repo"
+    echo "Options:"
+    echo "  --uninstall      Remove Jekyll setup"
+    echo "  --update-images  Update existing _config.yml to include image files"
     exit 1
 fi
 
@@ -111,6 +205,12 @@ fi
 # Handle uninstall if requested
 if [ "$UNINSTALL" = true ]; then
     uninstall_jekyll "$TARGET_DIR"
+fi
+
+# Handle update-images if requested
+if [ "$UPDATE_IMAGES" = true ]; then
+    update_config_images "$TARGET_DIR"
+    exit $?
 fi
 
 echo -e "${BLUE}Setting up Jekyll with Just the Docs for: $TARGET_DIR${NC}"
@@ -226,12 +326,18 @@ aux_links:
 footer_content: "Built with Foam and Jekyll. Powered by Just the Docs theme."
 
 # Include/Exclude
+# Include all image files (including those starting with underscore)
 include:
   - "_*.jpeg"
   - "_*.jpg"
   - "_*.png"
   - "_*.gif"
+  - "_*.svg"
   - "_*.webp"
+  - "_*.bmp"
+  - "_*.ico"
+  - "_*.tiff"
+  - "_*.tif"
 
 exclude:
   - Gemfile
