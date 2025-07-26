@@ -150,7 +150,7 @@ source "https://rubygems.org"
 gem "jekyll", "~> 4.3.2"
 gem "just-the-docs", "~> 0.10.1"
 gem "webrick", "~> 1.8"
-gem "jekyll-foam-links", github: "time4Wiley/jekyll-foam-links", ref: "2a2d52a3b273449d6b7b4a47dcb655ea2a86eabc"
+gem "jekyll-foam-links", github: "time4Wiley/jekyll-foam-links"
 
 # Ruby 3.4 compatibility - these were previously default gems
 gem "csv", "~> 3.0"
@@ -226,6 +226,13 @@ aux_links:
 footer_content: "Built with Foam and Jekyll. Powered by Just the Docs theme."
 
 # Include/Exclude
+include:
+  - "_*.jpeg"
+  - "_*.jpg"
+  - "_*.png"
+  - "_*.gif"
+  - "_*.webp"
+
 exclude:
   - Gemfile
   - Gemfile.lock
