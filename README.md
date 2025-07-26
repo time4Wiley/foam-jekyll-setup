@@ -13,9 +13,29 @@ A shell script to quickly set up Jekyll with Just the Docs theme for Foam knowle
 
 ## Installation
 
-### Option 1: Homebrew (Recommended for macOS)
+### Option 1: Homebrew (Recommended for macOS and Linux)
 
+#### macOS
 ```bash
+brew tap time4wiley/foam
+brew install foam-jekyll-setup
+```
+
+#### WSL2 Ubuntu / Linux
+First install Homebrew on WSL2/Linux:
+```bash
+# Install Homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Add Homebrew to PATH (add to ~/.profile or ~/.bashrc)
+echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.profile
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+# Install build essentials
+sudo apt-get update
+sudo apt-get install build-essential
+
+# Then install foam-jekyll-setup
 brew tap time4wiley/foam
 brew install foam-jekyll-setup
 ```
