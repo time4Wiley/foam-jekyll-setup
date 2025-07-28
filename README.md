@@ -40,6 +40,34 @@ brew tap time4wiley/foam
 brew install foam-jekyll-setup
 ```
 
+#### Windows 11 (Git Bash)
+Using Git Bash on Windows 11:
+
+1. **Install Ruby using winget**:
+```powershell
+# In PowerShell or Windows Terminal
+winget install RubyInstallerTeam.Ruby
+```
+
+2. **Install bundler** (in Git Bash):
+```bash
+gem install bundler
+```
+
+3. **Clone and run the setup**:
+```bash
+git clone https://github.com/time4Wiley/foam-jekyll-setup.git
+cd foam-jekyll-setup
+./setup-jekyll-foam.sh /path/to/your/foam-repo
+```
+
+4. **Install Jekyll dependencies** (in your Foam repo):
+```bash
+cd /path/to/your/foam-repo
+bundle install
+./run-jekyll.sh
+```
+
 After installation, you can immediately use:
 ```bash
 foam-jekyll [directory]
